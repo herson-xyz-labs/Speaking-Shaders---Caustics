@@ -1,31 +1,33 @@
 # Speaking Shaders - Caustics
 
-###### Texture Sampling with Pre Computed Texture Map - Load Texture, Create Caustics Material
-![](/public/documentation/2023-12-15-1_compressed.gif)
+#### Texture Sampling with Pre Computed Texture Map - Dual sampling of Caustic Texture
+![](/public/documentation/2023-12-15-2_compressed.gif)
 
-####### Syntax Changes
-1. React Hook Integration:
-    - In the updated version, useRef and useEffect from React are introduced. These hooks are essential for managing references and side effects in functional components, indicating a shift towards more React-centric coding practices.
-    - The useFrame hook from @react-three/fiber is also added, which is typically used for animation or continuous rendering.
-2. Material Creation and Usage:
-    - The original code defines a createCausticsMaterial function, which is then used to create a material instance. In contrast, the updated code directly declares CausticsMaterial using shaderMaterial and utilizes useRef to manage its instance. This change simplifies the material creation process.
-3. Shader Modifications:
-    - In the fragment shader, the updated code modifies the uv coordinate by adding a time-based animation (fract(vUv + uTime * 0.01)), resulting in a dynamic texture movement.
-    - Introduction of sandColor and floorColor in the fragment shader. This adds more complexity to the shader by blending the caustics texture with a base color, enhancing the visual effect.
+Analyzing the new fragment shader code, there are key changes to focus on regarding its syntax and the implications for the project's visual effects.
 
-####### Architectural Changes
-1. Dependency on THREE.js and React Three Fiber:
-    - The architecture remains heavily reliant on THREE.js and @react-three/fiber, with a stronger emphasis on React's functional programming style in the updated code.
-2. State Management and Animation:
-    - The use of useRef and useEffect reflects a shift towards a more React-centric state management approach, particularly for handling mutable references (like the material's texture).
-    - The useFrame hook introduces an animation loop, crucial for real-time rendering applications, especially in WebGL contexts.
+##### Syntax Changes in Fragment Shader
 
-####### Project Impact
-1. Enhanced Interactivity and Visual Appeal:
-    - The addition of time-based animation in the shader and the use of React hooks for texture updating significantly enhance the interactivity and visual dynamics of the project.
-2. Simplified Codebase with Improved Readability:
-    - The refactoring and integration of React features streamline the component, making it more maintainable and readable for developers familiar with React and THREE.js.
-3. Broader React Integration:
-    - The shift towards a more React-centric approach suggests that the project is likely evolving to better align with modern web development practices, particularly in the context of interactive 3D graphics.
+1. **Enhanced Animation Variables:**
+   - Introduction of `speed1`, `speed2`, `scale1`, and `scale2`. These variables control the speed and scale of the texture animation, allowing for more nuanced and complex visual effects.
 
-In summary, these changes reflect a significant enhancement in the project's visual dynamics and interactivity, along with a shift towards a more integrated and streamlined React-based architecture. This would likely improve both the user experience and the developer experience.
+2. **Dual UV Coordinate Manipulation:**
+   - The shader now calculates two sets of UV coordinates (`uv1` and `uv2`) with different scales and speeds. This approach creates a more layered and dynamic visual effect.
+
+3. **Combining Textures:**
+   - The use of `min(caustics1, caustics2)` to combine the two textures (`caustics1` and `caustics2`) creates an effect where the darker parts of both textures are emphasized, potentially leading to a more realistic underwater light effect.
+
+4. **Refined Color Blending:**
+   - The `floor` color is a blend of `causticsEffect` and `sandColor`, with a different mixing ratio compared to the previous version (`0.4` vs `0.7`). This change affects the visual prominence of the caustics effect over the base color.
+
+##### Project Impact
+
+1. **Visual Complexity and Realism:**
+   - The addition of dual UV manipulation and the refined blending ratio enhances the visual complexity, potentially offering a more realistic and visually appealing underwater caustics effect.
+
+2. **Customizability and Flexibility:**
+   - The introduction of additional variables for speed and scale offers more flexibility and customizability in the shader. This allows for finer control over the animation, which can be tailored to specific artistic or realistic needs.
+
+3. **Increased Shader Complexity:**
+   - While these changes enhance the visual output, they also increase the complexity of the shader. This might require more understanding of shader programming for future modifications and could have performance implications depending on the hardware.
+
+In summary, these updates significantly enhance the visual dynamics of the shader, introducing more complexity and realism to the caustics effect. They demonstrate a sophisticated use of GLSL for creating compelling visual effects in web-based 3D applications.
