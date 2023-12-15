@@ -1,26 +1,41 @@
 import * as THREE from 'three'
+import { useRef, useEffect } from 'react'
 import { shaderMaterial } from '@react-three/drei'
-import { extend, useLoader } from '@react-three/fiber'
+import { useFrame, extend, useLoader } from '@react-three/fiber'
 import causticsFragmentShader from './shaders/causticsFragmentShader.frag'
 import causticsVertexShader from './shaders/causticsVertexShader.vert'
 
-const createCausticsMaterial = (texture) => shaderMaterial(
+const CausticsMaterial = shaderMaterial(
     {
         uTime: 0,
         uColorStart: new THREE.Color('hotpink'),
         uColorEnd: new THREE.Color('mediumpurple'),
-        uTexture: texture,
+        uTexture: new THREE.Texture(),
     },
     causticsVertexShader,
     causticsFragmentShader
 );
 
+extend({ CausticsMaterial })
+
 export default function Experience() 
 {
     const texture = useLoader(THREE.TextureLoader, './caust_001.png');
-    const CausticsMaterial = createCausticsMaterial(texture);
+    const causticsMaterial = useRef();
 
-    extend({ CausticsMaterial })
+    useEffect(() => {
+        if (causticsMaterial.current && texture && texture.image) {
+            causticsMaterial.current.uniforms.uTexture.value = texture;
+        }
+    }, [texture]); // Re-run this effect when the texture is loaded
+
+    useFrame((state, delta) => 
+        {
+            if (causticsMaterial.current) {
+                causticsMaterial.current.uTime += delta;
+            }
+        }
+    );
 
     return <>
         <mesh
@@ -41,7 +56,7 @@ export default function Experience()
             scale= { 10 }
             position-y={ -1 }>
             <planeGeometry />
-            <causticsMaterial />
+            <causticsMaterial ref={ causticsMaterial }/>
         </mesh>
 
     </>

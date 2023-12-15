@@ -107,13 +107,13 @@ void main()
 
     // Sample the texture
 
-    vec2 uv = vUv;
+    vec2 uv = fract(vUv + uTime * 0.01);
 
     vec3 caustics1 = texture2D(uTexture, uv).rgb;
 
-    //vec3 sandColor = vec3(141.0/255.0, 130.0/255.0, 114.0/255.0);
+    vec3 sandColor = vec3(141.0/255.0, 130.0/255.0, 114.0/255.0);
 
-    //vec3 floorColor = caustics1 * 0.7 + sandColor; //mix(sandColor, caustics1, 0.22);
+    vec3 floorColor = caustics1 * 0.7 + sandColor; //mix(sandColor, caustics1, 0.22);
 
-    gl_FragColor = vec4(caustics1, 1.0);
+    gl_FragColor = vec4(floorColor, 1.0);
 }
