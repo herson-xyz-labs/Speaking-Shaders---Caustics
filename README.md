@@ -1,4 +1,4 @@
 # Speaking Shaders - Caustics
 
-###### Setting Up Basic React Three Fiber Scene
-![](/public/documentation/Screenshot%202023-12-13%20at%203.43.10%20PM.png)
+###### Texture Sampling with Pre Computed Texture Map - Load Texture, Create Caustics Material
+![](/public/documentation/Screenshot%202023-12-14%20at%2010.23.27%20PM.png)

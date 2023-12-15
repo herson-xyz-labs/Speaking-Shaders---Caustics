@@ -1,5 +1,27 @@
+import * as THREE from 'three'
+import { shaderMaterial } from '@react-three/drei'
+import { extend, useLoader } from '@react-three/fiber'
+import causticsFragmentShader from './shaders/causticsFragmentShader.frag'
+import causticsVertexShader from './shaders/causticsVertexShader.vert'
+
+const createCausticsMaterial = (texture) => shaderMaterial(
+    {
+        uTime: 0,
+        uColorStart: new THREE.Color('hotpink'),
+        uColorEnd: new THREE.Color('mediumpurple'),
+        uTexture: texture,
+    },
+    causticsVertexShader,
+    causticsFragmentShader
+);
+
 export default function Experience() 
 {
+    const texture = useLoader(THREE.TextureLoader, './caust_001.png');
+    const CausticsMaterial = createCausticsMaterial(texture);
+
+    extend({ CausticsMaterial })
+
     return <>
         <mesh
             position-x={ -2 }>
@@ -19,7 +41,8 @@ export default function Experience()
             scale= { 10 }
             position-y={ -1 }>
             <planeGeometry />
-            <meshBasicMaterial color="greenyellow" />
+            <causticsMaterial />
         </mesh>
+
     </>
 }
