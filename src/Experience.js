@@ -65,13 +65,8 @@ export default function Experience()
         <OrbitControls />
 
         <Environment
-            ground = {{
-                height: 7,
-                radius: 28,
-                scale: 100,
-                receiveShadow: true
-            }}
-            files={ './environmentMaps/1/hdri.hdr'}
+            background
+            files={ './environmentMaps/2/hdri.hdr'}
             resolution={ 1024 }
         />
 
