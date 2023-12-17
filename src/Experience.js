@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { useRef, useEffect } from 'react'
-import { shaderMaterial, OrbitControls, MeshTransmissionMaterial, Environment, Lightformer } from '@react-three/drei'
+import { shaderMaterial, OrbitControls, MeshTransmissionMaterial, Environment, useFBO } from '@react-three/drei'
 import { useFrame, extend, useLoader } from '@react-three/fiber'
 import { useControls } from 'leva'
 import causticsFragmentShader from './shaders/causticsFragmentShader.frag'
@@ -23,6 +23,9 @@ export default function Experience()
 {
     const texture = useLoader(THREE.TextureLoader, './caust_001.png');
     const causticsMaterial = useRef();
+    const causticSphere = useRef();
+    const seeThroughObject = useRef();
+    const buffer = useFBO();
 
     useEffect(() => {
         if (causticsMaterial.current && texture && texture.image) {
@@ -35,6 +38,14 @@ export default function Experience()
             if (causticsMaterial.current) {
                 causticsMaterial.current.uTime += delta;
             }
+
+            causticSphere.current.visible = true;
+            seeThroughObject.current.visible = false;
+            state.gl.setRenderTarget(buffer);
+            state.gl.render(state.scene, state.camera);
+            state.gl.setRenderTarget(null);
+            causticSphere.current.visible = false;
+            seeThroughObject.current.visible = true;
         }
     );
 
@@ -42,54 +53,59 @@ export default function Experience()
         envMapIntensity: { value: 1, min: 0, max: 12} 
     });
 
+    const { transmission } = useControls('transmission', { 
+        transmission: { value: 3, min: 0, max: 4} 
+    });
+
+    const { roughness } = useControls('roughness', { 
+        roughness: { value: 0.3, min: 0, max: 1} 
+    });
+
     return <>
         <OrbitControls />
 
         <Environment
-            background 
+            ground = {{
+                height: 7,
+                radius: 28,
+                scale: 100,
+                receiveShadow: true
+            }}
             files={ './environmentMaps/1/hdri.hdr'}
+            resolution={ 1024 }
         />
 
-        <mesh
-            scale={ 5 }
-            position-z={ 0 }
-            rotation-y={ Math.PI * 0.5 }>
-            <sphereGeometry/>
-            <causticsMaterial
-                side={ THREE.BackSide }
-                ref={ causticsMaterial } />
-        </mesh>
+        <group ref={ causticSphere }>
+            <mesh
+                scale={ 5 }
+                position-y={ 1 }
+                rotation-y={ Math.PI * 0.5 }>
+                <sphereGeometry/>
+                <causticsMaterial
+                    side={ THREE.BackSide }
+                    ref={ causticsMaterial } />
+            </mesh>
+        </group>
 
         <mesh
-            scale={ 3 }
-            position-z={ 0 }>
-            <torusGeometry/>
+            ref={ seeThroughObject }
+            scale={ 1.5 }
+            position-y={ 1 }>
+            <boxGeometry
+                args={ [3, 1, 1] }
+                />
             <MeshTransmissionMaterial 
-                         transmission={3.0}
-                         roughness={0.3}
-                         thickness={0.1}
-                         normalScale={[0.4, 0.4]}
-                         color={"#fa9600"} />
-                         {/* color={"#0064fa"} /> */}
-                         {/* color={"#fa00e1"} /> */}
-                         {/* color={"#9600fa"} /> */}
+                        transmission={transmission}
+                        roughness={roughness}
+                        thickness={0.1}
+                        normalScale={[0.4, 0.4]}
+                        color={"#fa9600"} 
+                        envMapIntensity={envMapIntensity}
+                        buffer={buffer.texture}
+                        />
+                        {/* color={"#0064fa"} /> */}
+                        {/* color={"#fa00e1"} /> */}
+                        {/* color={"#9600fa"} /> */}
         </mesh>
-        {/* <mesh
-                rotation-x={ Math.PI * -.5 }
-                scale={ 30 }>
-                <planeGeometry />
-                <meshBasicMaterial />
-        </mesh> */}
-
-        {/* <mesh
-            scale= { 10 }
-            rotation-y={ Math.PI / 2 }
-            position-y={ 0 }
-            position-z={ -5 }>
-            <planeGeometry 
-                scale={ 1.3 }/>
-            <causticsMaterial 
-                ref={ causticsMaterial } />
-        </mesh> */}
     </>
 }
