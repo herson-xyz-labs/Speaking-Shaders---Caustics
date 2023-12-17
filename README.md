@@ -1,18 +1,41 @@
 # Speaking Shaders - Caustics
 
-#### Texture Sampling with Pre Computed Texture Map - Dual sampling of Caustic Texture
-![](/public/documentation/2023-12-15-3_compressed.gif)
+## Texture Sampling with Pre Computed Texture Map - Blending Caustic Effect with Transmissive Material
+![](/public/documentation/2023-12-16-1_compressed.gif)
 
-##### Syntax Changes in Fragment Shader
+#### Additional Imports:
+- **Drei Components**: `OrbitControls`, `MeshTransmissionMaterial`, `Environment`, `Lightformer` are used for enhanced 3D scene control and rendering.
+- **Leva**: `useControls` creates a UI for real-time control of properties.
 
-1. **RGB Split Technique:**
-   - The shader now includes an RGB split effect for both `caustics1` and `caustics2`. This is achieved by offsetting the red and blue channels (`r1`, `b1`, `r2`, `b2`) based on a time-varying factor (`sin(uTime)`, `cos(uTime)`). The `splitAmount` variable controls the extent of this RGB separation.
-    - The introduction of the `splitAmount` variable offers additional control over the visual effect, allowing developers to fine-tune the intensity of the RGB split to suit different aesthetic requirements or performance constraints.
-   - This technique can create a chromatic aberration effect, adding an extra layer of realism and visual interest to the caustics effect.
+#### Updated Experience Component:
+- **OrbitControls**: Integrated for enhanced user interaction with the 3D scene.
+- **Environment**: Adds an HDR environment map, improving lighting and reflection realism.
+- **Meshes with New Materials**:
+  - Sphere with the custom `CausticsMaterial`.
+  - Torus with `MeshTransmissionMaterial`, suitable for glass-like effects.
+- **Leva Controls**: Controls `envMapIntensity` dynamically.
 
-2. **Enhanced UV Coordinate Manipulation:**
-   - The manipulation of `uv1` and `uv2` is now more sophisticated, with an additional offset applied to create the RGB split. This adds further dynamism and texture to the visual effect.
+#### Commented Out Code:
+- Parts of the original scene are commented out, possibly for testing or simplification.
 
-3. **Combined Texture Effects:**
-   - The `min(caustics1, caustics2)` operation remains, but now it combines the textures with the RGB split effect. This can result in more intricate and varied light patterns, simulating underwater lighting more effectively.
+### Modified Fragment Shader
 
+#### Uniforms and Varying: 
+- Remains unchanged from the previous version.
+
+#### Updated Main Function:
+- **Adjusted Parameters**: Modifies `speed1`, `speed2`, `scale1`, `scale2`, and `splitAmount` values, likely for caustics animation adjustments.
+- **Sand Color Change**: Alters `sandColor` to a different value, affecting the color scheme.
+- **Color Commented Options**: Provides alternative color values for experimentation.
+- **Caustics Effect Combination**: Directly adds `causticsEffect` and `sandColor`, potentially creating a more pronounced effect.
+
+### Syntax and Architecture Insights
+
+- **Enhanced Interactivity**: Incorporation of `OrbitControls` and `Environment` enhances user experience.
+- **Material Diversity**: Introduction of `MeshTransmissionMaterial` adds complexity and realism.
+- **Dynamic Control Integration**: Leva's `useControls` adds real-time user interactivity.
+- **Shader Customization**: Indicates ongoing visual effect fine-tuning.
+
+### Project Impact
+
+The updates significantly elevate the project's visual and interactive capabilities, making the 3D scene more engaging and showcasing versatility in 3D web application development. These enhancements are beneficial in applications prioritizing user experience and visual quality, like virtual galleries or interactive educational tools. Continued shader refinements highlight a commitment to specific aesthetic or functional goals.

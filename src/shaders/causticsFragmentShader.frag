@@ -6,8 +6,8 @@ uniform vec3 uColorEnd;
 varying vec2 vUv;
 
 void main() {
-    float speed1 = 0.02;
-    float speed2 = 0.01;
+    float speed1 = 0.04;
+    float speed2 = 0.02;
     float scale1 = 2.0;
     float scale2 = 2.5;
     float splitAmount = 0.005; // Set your split amount
@@ -30,9 +30,14 @@ void main() {
     vec3 caustics2 = vec3(r2, g2, b2);
 
     vec3 causticsEffect = min(caustics1, caustics2);
-    vec3 sandColor = vec3(141.0/255.0, 130.0/255.0, 114.0/255.0);
+    vec3 sandColor = vec3(0.0/255.0, 100.0/255.0, 250.0/255.0);
+    //vec3 sandColor = vec3(0.0/255.0, 225.0/255.0, 250.0/255.0);
+    //vec3 sandColor = vec3(25.0/255.0, 0.0/255.0, 250.0/255.0);
+    //vec3 sandColor = vec3(150.0/255.0, 0.0/255.0, 250.0/255.0);
+    //vec3 sandColor = vec3(0.0/255.0, 250.0/255.0, 25.0/255.0);
+    //vec3 sandColor = vec3(250.0/255.0, 0.0/255.0, 225.0/255.0);
 
-    vec3 floor = causticsEffect * 0.4 + sandColor;
+    vec3 floor = causticsEffect + sandColor;
 
     gl_FragColor = vec4(floor, 1.0);
 }
